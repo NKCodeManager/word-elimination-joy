@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="Access-Control-Allow-Origin" content="*">
+  <title>文档</title>
+  <script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+  <script type="text/javascript" src="js/xlsx.core.min.js"></script>
+  <style type="text/css">
+    .demo{
+        font: bold 20px/100% "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
+        color: #fff;
+    }
+    .demo1{
+         text-shadow: red 0 1px 0;
+    }
+    .demo2{
+        text-shadow: 0 0 20px red;
+    }
+    .demo3 {
+      text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 40px #ff00de, 0 0 70px #ff00de;
+    }
+    .demo4 {
+      color: #000;
+      text-shadow: 0 1px 1px #fff;           
+    }
+    .demo5 {
+      color: #ccc;
+      text-shadow: -1px -1px 0 #fff,1px 1px 0 #333,1px 1px 0 #444;
+    }
+    .demo6 {
+      text-shadow: 0 0 5px #f96;
+    }
+    .demo7 {
+      text-shadow:0 0 6px #F96, -1px -1px  #FFF, 1px -1px  #444;
+    }
+    .demo8 {
+      color: #566F89;
+      background: #C5DFF8;
+      text-shadow: 1px 1px 0 #E4F1FF;
+    }
+    .demo9 {
+      color: #fff;
+      text-shadow: 1px 1px 0 #f96,-1px -1px 0 #f96; 
+    }
+    .demo10 {
+      color: #fff;
+      text-shadow: 1px 1px rgba(197, 223, 248,0.8),2px 2px rgba(197, 223, 248,0.8),3px 3px rgba(197, 223, 248,0.8),4px 4px rgba(197, 223, 248,0.8),5px 5px rgba(197, 223, 248,0.8),6px 6px rgba(197, 223, 248,0.8);
+    }
+  .hidden{
+    opacity: 0;
+  }
+  #initData .box{
+    font: bold 20px/100% "微软雅黑", "Lucida Grande", "Lucida Sans", Helvetica, Arial, Sans;
+    color: #fff;
+  }
+  h2{
+    text-shadow: 0 0 5px #f96;
+  }
+  .file {
+    position: relative;
+    display: inline-block;
+    background: #D0EEFF;
+    border: 1px solid #99D3F5;
+    border-radius: 4px;
+    padding: 4px 12px;
+    overflow: hidden;
+    color: #ff00de;
+    text-decoration: none;
+    text-indent: 0;
+    line-height: 20px;
+}
+.file input {
+    position: absolute;
+    font-size: 100px;
+    right: 0;
+    top: 0;
+    opacity: 0;
+}
+.file:hover {
+    background: #AADFFD;
+    border-color: #78C3F3;
+    color: #ff00de;
+    text-decoration: none;
+}
+.pic-box{
+  line-height: 64px;
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  cursor: pointer;
+  background: url(images/pic-bg.png) center no-repeat;
+  background-size: contain;
+  text-shadow: 0 0 20px #f96;
+  text-align: center;
+}
+.pic-box.active {
+  width: 90px;
+  height: 90px;
+  border-radius: 16px; 
+  background: url(images/active.png) center no-repeat;
+  background-size: 125%;
+}
+.box{
+  height: 550px;
+  text-align: center;
+  border-spacing: 0; 
+  border-collapse: collapse;
+  background: url(images/game-bg.png) center no-repeat;
+  background-size: contain;
+  margin:0,auto;
+}
+#game{
+  margin:auto;
+  padding-left: 240px;
+}
+  </style>
+<script>
+    var X = XLSX;
+    var size = 0; //单词个数
+    var cols = 8; //列数
+    var rows = 6; //行数
+    function handleFile(e) {
+        rABS = true;
+        use_worker = false;
+        var files = e.target.files;
+        var f = files[0];
+        var reader = new FileReader();
+        var name = f.name;
+        reader.onload = function(e) {
+            if(typeof console !== 'undefined') console.log("onload", new Date(), rABS, use_worker);
+            var data = e.target.result;
+            var wb = X.read(data, {type: 'binary'});
+            var j_data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
+            var data = JSON.stringify(j_data);
+            console.log("初始化数据:",data);
+            if(!checkSize(j_data)) {
+              alert("Excel中单词总数量已超过"+cols*rows);
+              return;
+            }
+            $("#initData").addClass("hidden");
+            initTable(j_data);
+            if(out.innerText === undefined) out.textContent = data;
+              else out.innerText = data;
+              //播放音乐
+              $('audio').get(0).play();
+            };
+        reader.readAsBinaryString(f);
+     }
+     //检验表格单词个数是否满足
+     function checkSize(j_data){
+       var readerSize = j_data.length;
+       if(readerSize*2>rows*cols){
+                return false;
+          }
+          return true;
+     }
+     //初始化表格
+    function initTable(jsonData){
+      console.log(parseInt(7/8));//0
+      console.log(7%8);//7
+      console.log(parseInt(9/8));//1
+      console.log(9%8);//1
+      console.log("初始化数据:",JSON.stringify(jsonData));
+      //初始化数据: [
+      //{"单词A":"go","单词B":"well"},
+      //{"单词A":"me","单词B":"good"},
+      //{"单词A":"We","单词B":"Your"},
+      //{"单词A":"Search","单词B":"Elastic"},
+      //{"单词A":"Kibanan","单词B":"TSF"}
+      //]
+      var tbdata = [];
+      for(var m=0;m<jsonData.length;m++){
+        $.each(jsonData[m],function(i,item){
+          tbdata.push(item);
+      });
+      }
+      console.log(JSON.stringify(tbdata));
+      size = tbdata.length;
+      var tmp_rows = parseInt(size/cols)+1;
+      var tmp_cols = 0;
+      var html = '';
+      for(var n =1;n<tmp_rows+1;n++){
+        html += "<tr class='game-row'>";
+          if(size<=cols){//单词个数小于列数 = = 也就是只有一行时
+            tmp_cols =  size;
+          }else if(n == tmp_rows){//多行时并且是最后一行时
+            tmp_cols = size%cols;
+          }else{
+            tmp_cols = cols;
+          }
+          for(var m =0;m<tmp_cols;m++){
+                //更改为随机取值的形式
+                var number = Math.floor(Math.random() * tbdata.length);
+                html += "<td><div class='pic-box demo' onclick='match(this,\""+tbdata[number]+"\");'>";
+                html += tbdata[number];
+                //获取该随机元素后，将其删除，避免后面重复取到
+                tbdata.splice(number,1);
+                html += "</div></td>"
+            }
+        html += "</tr>";
+      }
+      $("#game").html(html);
+    }
+    //点击事件
+    function match(obj,select){
+      var pools = JSON.parse($("#out").html());
+      var mapper ='';
+      for(let pool of pools){
+        $.each(pool,function(key,value){
+          if(value == select){
+            $.each(pool,function(key,value){
+              if(value != select){
+                mapper += value+",";
+              }
+            });
+          }
+        });
+      }
+      mapper = mapper.substring(0,mapper.length-1);
+      $('#game tr').each(function(i){                   // 遍历 tr
+          $(this).children('td').each(function(j){  // 遍历 tr 的各个 td
+              var matchSchm= $(this).children("div").text();
+              var mapObj = $(this);
+              if(matchSchm == mapper){
+                  $($(this).children("div")).addClass("active");
+                  $(obj).addClass("active");
+                  setInterval(function () {
+                  $(mapObj).addClass("hidden");
+                  $(obj).addClass("hidden");
+                  $(mapObj).children("div").removeClass("active");
+                  $(obj).removeClass("active");
+                  }, 1000);
+              }
+          });
+      });
+    }
+</script>
+
+</head>
+<body>
+    <div id="initData" style="float: right;">
+      <h2 style="float:left;margin-top: 0px;border-top-width: 6px">初始化数据</h2>
+      <a href="javascript:;" class="file" style="margin-top: 0px;margin-left: 50px;">选择文件
+        <input type="file" id="xlf">
+      </a>
+    </div>
+    <div class="box">
+        <table id="game">
+        </table>
+    </div>
+    <pre id="out" style="display: none;"></pre>
+    <audio class="hidden" src="http://tm3dfds.yusi.tv/uuauth/UUAuth/wymp3/2016/11/1/135702_201611117755_7923_17852_1763522.mp3?36045f9f9ca136ea917219014b327886" loop="loop"></audio>
+    <script type="text/javascript">
+			var xlf = document.getElementById('xlf');
+			if(xlf.addEventListener) xlf.addEventListener('change', handleFile, false);
+		</script>
+</body>
+</html>

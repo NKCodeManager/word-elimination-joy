@@ -1,0 +1,12 @@
+{
+    "word":[
+        {
+            "value":"a",
+            "scope":"A,a"
+        },
+        {
+            "value":"A",
+            "scope":"A,a"
+        }
+    ]
+}
